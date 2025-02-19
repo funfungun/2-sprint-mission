@@ -2,30 +2,30 @@
 
 ```mermaid
 erDiagram
-Product {
-int id PK
-string name
-text description
-decimal price
-string tags
-datetime createdAt
-datetime updatedAt
-}
+    Product {
+        string id PK
+        string name
+        string description
+        float price
+        string[] tags
+        datetime createdAt
+        datetime updatedAt
+    }
 
     Article {
-        int id PK
+        string id PK
         string title
-        text content
+        string content
         datetime createdAt
         datetime updatedAt
     }
 
     Comment {
-        int id PK
-        text content
+        string id PK
+        string content
         datetime createdAt
-        int productId FK "references Product(id)"
-        int articleId FK "references Article(id)"
+        string productId FK "references Product(id)"
+        string articleId FK "references Article(id)"
     }
 
     Product ||--o| Comment: "has many"
