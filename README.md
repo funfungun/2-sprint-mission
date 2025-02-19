@@ -1,5 +1,6 @@
 # 2-sprint-mission
 
+```mermaid
 erDiagram
 Product {
 int id PK
@@ -29,3 +30,4 @@ datetime updatedAt
 
     Product ||--o| Comment: "has many"
     Article ||--o| Comment: "has many"
+```
