@@ -1,6 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { CreateComment } from "../struct.js";
+import { CreateComment, PatchComment } from "../struct.js";
 import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
@@ -129,6 +129,48 @@ router.post(
     });
 
     res.status(201).send(comment); // 등록된 댓글 반환
+  })
+);
+
+// 중고마켓 댓글 수정 API
+router.patch(
+  "/product/:productId/:commentId",
+  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+
+    // 요청 본문 검증 (PatchComment 구조체 사용)
+    assert(req.body, PatchComment);
+
+    const { content } = req.body;
+
+    // 댓글 수정
+    const comment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { content },
+    });
+
+    res.status(200).send(comment); // 수정된 댓글 반환
+  })
+);
+
+// 자유게시판 댓글 수정 API
+router.patch(
+  "/article/:articleId/:commentId",
+  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+
+    // 요청 본문 검증 (PatchComment 구조체 사용)
+    assert(req.body, PatchComment);
+
+    const { content } = req.body;
+
+    // 댓글 수정
+    const comment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { content },
+    });
+
+    res.status(200).send(comment); // 수정된 댓글 반환
   })
 );
 
