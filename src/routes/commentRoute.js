@@ -174,4 +174,34 @@ router.patch(
   })
 );
 
+// 중고마켓 댓글 삭제 API
+router.delete(
+  "/product/:productId/:commentId",
+  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+
+    // 댓글 삭제
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    res.status(204).send(); // No Content 응답 (삭제 성공)
+  })
+);
+
+// 자유게시판 댓글 삭제 API
+router.delete(
+  "/article/:articleId/:commentId",
+  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+
+    // 댓글 삭제
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    res.status(204).send(); // No Content 응답 (삭제 성공)
+  })
+);
+
 export default router;
