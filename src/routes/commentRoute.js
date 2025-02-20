@@ -1,5 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { CreateComment } from "../struct.js";
+import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -81,6 +83,52 @@ router.get(
     });
 
     res.status(200).send(comments);
+  })
+);
+
+// 중고마켓 댓글 등록 API
+router.post(
+  "/product/:productId",
+  asyncHandler(async (req, res) => {
+    const { productId } = req.params;
+
+    // 요청 본문 검증 (CreateComment 구조체 사용)
+    assert(req.body, CreateComment);
+
+    const { content } = req.body;
+
+    // 댓글 등록
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        productId, // 중고마켓 상품에 대한 댓글
+      },
+    });
+
+    res.status(201).send(comment); // 등록된 댓글 반환
+  })
+);
+
+// 자유게시판 댓글 등록 API
+router.post(
+  "/article/:articleId",
+  asyncHandler(async (req, res) => {
+    const { articleId } = req.params;
+
+    // 요청 본문 검증 (CreateComment 구조체 사용)
+    assert(req.body, CreateComment);
+
+    const { content } = req.body;
+
+    // 댓글 등록
+    const comment = await prisma.comment.create({
+      data: {
+        content,
+        articleId, // 자유게시판 게시글에 대한 댓글
+      },
+    });
+
+    res.status(201).send(comment); // 등록된 댓글 반환
   })
 );
 

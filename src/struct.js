@@ -15,3 +15,7 @@ export const CreateArticle = s.object({
 });
 
 export const PatchArticle = s.partial(CreateArticle);
+
+export const CreateComment = s.object({
+  content: s.string(),
+});
