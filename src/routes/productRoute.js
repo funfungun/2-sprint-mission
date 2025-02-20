@@ -1,5 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { CreateProduct } from "../struct.js";
+import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -52,54 +54,21 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    const { name, description, price, tags } = req.body;
-
-    // 필수 필드 유효성 검사
-    if (!name || !description || !price || !Array.isArray(tags)) {
-      return res.status(400).send({ message: "Invalid input data" });
-    }
+    // 요청 본문 검증
+    assert(req.body, CreateProduct);
 
     // 상품 생성
-    const newProduct = await prisma.product.create({
+    const { name, description, price, tags } = req.body;
+    const product = await prisma.product.create({
       data: {
         name,
         description,
-        price: parseFloat(price), // price가 숫자인지 확인
+        price,
         tags,
       },
     });
 
-    // 생성된 상품 반환
-    res.status(201).send(newProduct);
-  })
-);
-
-// 상품 상세 조회 API
-router.get(
-  "/:id",
-  asyncHandler(async (req, res) => {
-    const { id } = req.params;
-
-    // 상품 조회
-    const product = await prisma.product.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        tags: true,
-        createdAt: true,
-      },
-    });
-
-    // 상품이 없는 경우 처리
-    if (!product) {
-      return res.status(404).send({ message: "Product not found" });
-    }
-
-    // 조회된 상품 반환
-    res.status(200).send(product);
+    res.status(201).send(product); // 생성된 상품 반환
   })
 );
 
