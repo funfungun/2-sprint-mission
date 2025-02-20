@@ -1,6 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { CreateArticle } from "../struct.js";
+import { CreateArticle, PatchArticle } from "../struct.js";
 import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
@@ -93,6 +93,30 @@ router.get(
     }
 
     res.status(200).send(article); // 게시글 정보 반환
+  })
+);
+
+// 게시글 수정 API
+router.patch(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 요청 본문 검증 (PatchArticle 구조체 사용)
+    assert(req.body, PatchArticle);
+
+    const { title, content } = req.body;
+
+    // 게시글 수정
+    const article = await prisma.article.update({
+      where: { id },
+      data: {
+        title,
+        content,
+      },
+    });
+
+    res.status(200).send(article); // 수정된 게시글 반환
   })
 );
 
