@@ -1,6 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { CreateProduct } from "../struct.js";
+import { CreateProduct, PatchProduct } from "../struct.js";
 import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
@@ -69,6 +69,25 @@ router.post(
     });
 
     res.status(201).send(product); // 생성된 상품 반환
+  })
+);
+
+// 상품 수정 API (PATCH)
+router.patch(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 요청 본문 검증
+    assert(req.body, PatchProduct);
+
+    // 상품 수정
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data: req.body, // 요청 본문으로 전달된 수정된 데이터
+    });
+
+    res.status(200).send(updatedProduct); // 수정된 상품 반환
   })
 );
 

@@ -6,3 +6,5 @@ export const CreateProduct = s.object({
   price: s.min(s.number(), 0),
   tags: s.array(s.string()),
 });
+
+export const PatchProduct = s.partial(CreateProduct);
