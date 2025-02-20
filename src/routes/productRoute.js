@@ -48,4 +48,30 @@ router.get(
   })
 );
 
+// 상품 등록 API
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { name, description, price, tags } = req.body;
+
+    // 필수 필드 유효성 검사
+    if (!name || !description || !price || !Array.isArray(tags)) {
+      return res.status(400).send({ message: "Invalid input data" });
+    }
+
+    // 상품 생성
+    const newProduct = await prisma.product.create({
+      data: {
+        name,
+        description,
+        price: parseFloat(price), // price가 숫자인지 확인
+        tags,
+      },
+    });
+
+    // 생성된 상품 반환
+    res.status(201).send(newProduct);
+  })
+);
+
 export default router;
