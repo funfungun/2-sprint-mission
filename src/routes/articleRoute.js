@@ -1,5 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import { CreateArticle } from "../struct.js";
+import { assert } from "superstruct";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -51,6 +53,27 @@ router.get(
     });
 
     res.status(200).send(articles); // 성공 응답
+  })
+);
+
+// 게시글 등록 API
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    // 요청 본문 검증
+    assert(req.body, CreateArticle);
+
+    const { title, content } = req.body;
+
+    // 게시글 생성
+    const article = await prisma.article.create({
+      data: {
+        title,
+        content,
+      },
+    });
+
+    res.status(201).send(article); // 생성된 게시글 반환
   })
 );
 
