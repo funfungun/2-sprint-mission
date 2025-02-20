@@ -77,4 +77,23 @@ router.post(
   })
 );
 
+// 게시글 상세 조회 API
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 게시글 조회
+    const article = await prisma.article.findUnique({
+      where: { id },
+    });
+
+    if (!article) {
+      return res.status(404).send({ message: "Article not found" });
+    }
+
+    res.status(200).send(article); // 게시글 정보 반환
+  })
+);
+
 export default router;
