@@ -118,4 +118,19 @@ router.patch(
   })
 );
 
+// 상품 삭제 API (DELETE)
+router.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 상품 삭제
+    const product = await prisma.product.delete({
+      where: { id },
+    });
+
+    res.status(200).send({ message: "Product deleted successfully", product });
+  })
+);
+
 export default router;
