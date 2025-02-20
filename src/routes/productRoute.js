@@ -74,4 +74,33 @@ router.post(
   })
 );
 
+// 상품 상세 조회 API
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 상품 조회
+    const product = await prisma.product.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        tags: true,
+        createdAt: true,
+      },
+    });
+
+    // 상품이 없는 경우 처리
+    if (!product) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+
+    // 조회된 상품 반환
+    res.status(200).send(product);
+  })
+);
+
 export default router;
