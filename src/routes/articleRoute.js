@@ -120,4 +120,19 @@ router.patch(
   })
 );
 
+// 게시글 삭제 API
+router.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // 게시글 삭제
+    const article = await prisma.article.delete({
+      where: { id },
+    });
+
+    res.status(200).send(article); // 삭제된 게시글 정보 반환
+  })
+);
+
 export default router;
